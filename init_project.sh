@@ -47,7 +47,7 @@ include config.mk
 
 .SUFFIXES: .R .log 
 .R.log: 
-	$(R) "source('$<', echo=T, keep.source=T, max.deparse.length=Inf)" > $@
+	$(R) "source('$<', echo=T, keep.source=T, max.deparse.length=Inf)" > $@ || (rm -f $@; exit 1)
 	rm -f *.pdf
 
 stats: $(LOGS)
