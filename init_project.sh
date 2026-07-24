@@ -85,7 +85,7 @@ include config.mk
 # Gnuplot
 .SUFFIXES: .gp .pdf
 .gp.pdf:
-	gnuplot $< $@
+	gnuplot -e "OUTPUT='$@'" $<
 
 
 # R
