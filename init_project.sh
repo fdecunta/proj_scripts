@@ -9,7 +9,7 @@ mkdir -p \
 
 
 # Top Makefile
-cat << 'EOF' >> Makefile
+cat << 'EOF' > Makefile
 # Project Makefile
 
 STATS = ./stats
@@ -36,29 +36,32 @@ EOF
 
 
 # --- STATS ---
-cat << 'EOF' >> ./stats/Makefile
+cat << 'EOF' > ./stats/Makefile
 # Statistical analysis makefile
 #
 # Modify config.mk to include R files and
+
+R = Rscript --vanilla -e
 
 include config.mk
 
 .SUFFIXES: .R .log 
 .R.log: 
-        R CMD BATCH --vanilla $< $@
-        @rm -f *.pdf
+	$(R) "source('$<', echo=T, keep.source=T, max.deparse.length=Inf)" > $@
+	rm -f *.pdf
 
 stats: $(LOGS)
 
 clean:
-        rm -f $(LOGS)
+	rm -f $(LOGS)
 EOF
 
-cat << 'EOF' >> ./stats/config.mk
+cat << 'EOF' > ./stats/config.mk
 # Configuration for data analysis Makefile
 
 # log files to be produced by R scripts
 # example:
+# run 01_bar.R and 02_boo.R
 # LOGS = 01_bar.log \
 #	02_foo.log
 LOGS = 
@@ -69,12 +72,12 @@ LOGS =
 #	$(DATADIR)/02_bar.dat
 
 DATADIR = ../data/figs
-OUTPUT_DATA = $(DATADIR)/shoot_biom.dat
+OUTPUT_DATA = 
 EOF
 
 
 # --- FIGURES ---
-cat << 'EOF' >> ./figs/Makefile
+cat << 'EOF' > ./figs/Makefile
 # Figures Makefile
 
 include config.mk
@@ -82,7 +85,7 @@ include config.mk
 # Gnuplot
 .SUFFIXES: .gp .pdf
 .gp.pdf:
-        gnuplot $< $@
+	gnuplot $< $@
 
 
 # R
@@ -94,13 +97,13 @@ include config.mk
 figs: $(PDFs)
 
 clean:
-        rm -f $(PDFs)
+	rm -f $(PDFs)
 
 .PHONY: figs clean
 EOF
 
 
-cat << 'EOF' >> ./figs/config.mk
+cat << 'EOF' > ./figs/config.mk
 # Configuration for figures Makefile
 
 # list PDFs plots
